@@ -50,7 +50,7 @@ class App(tk.Tk):
         button_6 = tk.Button(digits_pad, text='6', height=2,width=3, command=lambda: self.num_press('6'))
         button_6.grid(row=2, column=2, sticky='WE', columnspan=1)
 
-        button_sub = tk.Button(digits_pad, text='-', height=2,width=3, command=lambda: self.current_op(self.sub))
+        button_sub = tk.Button(digits_pad, text='-', height=2,width=3, command=lambda: self.set_op(self.sub))
         button_sub.grid(row=2, column=3, sticky='WE', columnspan=1)
 
         button_1 = tk.Button(digits_pad, text='1', height=2,width=3, command=lambda: self.num_press('1'))
@@ -62,7 +62,7 @@ class App(tk.Tk):
         button_3 = tk.Button(digits_pad, text='3', height=2,width=3, command=lambda: self.num_press('3'))
         button_3.grid(row=3, column=2, sticky='WE', columnspan=1)
 
-        button_add = tk.Button(digits_pad, text='+', height=2,width=3, command=lambda: self.current_op(self.add))
+        button_add = tk.Button(digits_pad, text='+', height=2,width=3, command=lambda: self.set_op(self.add))
         button_add.grid(row=3, column=3, sticky='WE', columnspan=1)
 
         button_0 = tk.Button(digits_pad, text='0', height=2,width=3, command=lambda: self.num_press('0'))
@@ -74,9 +74,9 @@ class App(tk.Tk):
         button_eq = tk.Button(digits_pad, text='=', height=2,width=3, command=self.eq)
         button_eq.grid(row=4, column=3, sticky='WE', columnspan=1)
     
-        self.op = self.do_nothing
-        self.get_first = True
-        self.opcomp = False
+        self.operation = self.do_nothing
+        self.has_first_arg = True
+        self.operation_is_complete = False
 
     def clear(self):
         """ clear view """
@@ -85,48 +85,40 @@ class App(tk.Tk):
 
     def num_press(self, key):
         """ Append given number to view """
-        if self.opcomp:
-            self.ans = int(self.view.cget("text"))
-            self.clear()
-
-
-        self.opcomp = False
         result_str = self.view.cget("text") + key
         result_str = str(int(result_str))
         self.view.config(text=result_str)
         
-    def current_op(self,op):
-        """ - """
-        self.op = op # set current selected operation
+    def set_op(self,op):
+        """ set current operation type and saves  """
+        self.operation = op # set current selected operation
         self.ans = int(self.view.cget("text"))
         self.clear()
-        self.get_first = True
 
+        # self.has_first_arg = True
 
     def add(self):
         result = self.ans + self.arg2
         result_str = str(result)
         self.ans = result
         self.view.config(text=result_str)
-    
-    def sub(self):
-        result = self.ans - self.arg2
-        result_str = str(result)
-        self.ans = result
-        self.view.config(text=result_str)
 
     def eq(self):
         # if we already have the first argument
-        if self.get_first:
+        if self.has_first_arg:
             # get second argument
             self.arg2 = int(self.view.cget("text"))
         
-        self.get_first = False # we already have the first argument
-        self.opcomp = True # operation completed
-        self.op() # call current selected operation
+        self.has_first_arg = False # we already have the first argument
+        self.operation_is_complete = True # operation completed
+        self.operation() # call current selected operation
 
 
-
+    # def sub(self):
+    #     result = self.ans - self.arg2
+    #     result_str = str(result)
+    #     self.ans = result
+    #     self.view.config(text=result_str)
 
     def button_press(self,x):
         pass
