@@ -20,13 +20,13 @@ class App(tk.Tk):
         button_clear = tk.Button(digits_pad, text='C', height=2,width=3, command=self.clear)
         button_clear.grid(row=0, column=0, sticky='WE', columnspan=1)
 
-        button_pn = tk.Button(digits_pad, text='±', height=2,width=3, command=lambda: self.button_press(''))
+        button_pn = tk.Button(digits_pad, text='±', height=2,width=3, command=self.pn)
         button_pn.grid(row=0, column=1, sticky='WE', columnspan=1)
 
         button_per = tk.Button(digits_pad, text='%', height=2,width=3, command=self.perc)
         button_per.grid(row=0, column=2, sticky='WE', columnspan=1)
 
-        button_div = tk.Button(digits_pad, text='÷', height=2,width=3, command=lambda: self.button_press)
+        button_div = tk.Button(digits_pad, text='÷', height=2,width=3, command=self.div)
         button_div.grid(row=0, column=3, sticky='WE', columnspan=1)
 
         button_7 = tk.Button(digits_pad, text='7', height=2,width=3, command=lambda: self.num_press('7'))
@@ -68,7 +68,7 @@ class App(tk.Tk):
         button_0 = tk.Button(digits_pad, text='0', height=2,width=3, command=lambda: self.num_press('0'))
         button_0.grid(row=4, column=0, sticky='WE', columnspan=2)
 
-        button_dot = tk.Button(digits_pad, text='.', height=2,width=3, command=lambda: self.button_press(''))
+        button_dot = tk.Button(digits_pad, text='.', height=2,width=3, command=self.dot)
         button_dot.grid(row=4, column=2, sticky='WE', columnspan=1)
 
         button_eq = tk.Button(digits_pad, text='=', height=2,width=3, command=self.eq)
@@ -138,7 +138,7 @@ class App(tk.Tk):
         print("arg2:", self.arg2)
 
         expression = str(self.ans) + str(self.operation) + str(self.arg2)
-        result = eval(expression)
+        result = round(eval(expression),8)
         print(expression, result)
         self.ans = result
         self.view.config(text=str(result))
@@ -146,6 +146,28 @@ class App(tk.Tk):
 
         self.pressed_eq = True
 
+
+    def pn(self):
+        result = self.view.cget("text")
+        if result[0] == '-':
+            self.view.config(text=str(result[1:]))
+        else:
+            self.view.config(text=str('-'+result))
+    
+    def dot(self):
+        if self.pressed_eq:
+            self.clear()
+            self.pressed_eq = False
+
+        result = self.view.cget("text")
+        if '.' not in result:
+             self.view.config(text=str(result+'.'))
+
+    def div(self):
+        self.operation = '/'
+        self.ans = self.view.cget("text")
+        self.clear()
+        self.new_op = True
 
     def button_press(self,x):
         pass
