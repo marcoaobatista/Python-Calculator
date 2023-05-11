@@ -23,7 +23,7 @@ class App(tk.Tk):
         button_pn = tk.Button(digits_pad, text='±', height=2,width=3, command=lambda: self.button_press(''))
         button_pn.grid(row=0, column=1, sticky='WE', columnspan=1)
 
-        button_per = tk.Button(digits_pad, text='%', height=2,width=3, command=lambda: self.button_press(''))
+        button_per = tk.Button(digits_pad, text='%', height=2,width=3, command=self.perc)
         button_per.grid(row=0, column=2, sticky='WE', columnspan=1)
 
         button_div = tk.Button(digits_pad, text='÷', height=2,width=3, command=lambda: self.button_press)
@@ -38,7 +38,7 @@ class App(tk.Tk):
         button_9 = tk.Button(digits_pad, text='9', height=2,width=3, command=lambda: self.num_press('9'))
         button_9.grid(row=1, column=2, sticky='WE', columnspan=1)
 
-        button_mul = tk.Button(digits_pad, text='×', height=2,width=3, command=lambda: self.button_press(''))
+        button_mul = tk.Button(digits_pad, text='×', height=2,width=3, command=self.mul)
         button_mul.grid(row=1, column=3, sticky='WE', columnspan=1)
 
         button_4 = tk.Button(digits_pad, text='4', height=2,width=3, command=lambda: self.num_press('4'))
@@ -50,7 +50,7 @@ class App(tk.Tk):
         button_6 = tk.Button(digits_pad, text='6', height=2,width=3, command=lambda: self.num_press('6'))
         button_6.grid(row=2, column=2, sticky='WE', columnspan=1)
 
-        button_sub = tk.Button(digits_pad, text='-', height=2,width=3, command=lambda: self.set_op(self.sub))
+        button_sub = tk.Button(digits_pad, text='-', height=2,width=3, command=self.sub)
         button_sub.grid(row=2, column=3, sticky='WE', columnspan=1)
 
         button_1 = tk.Button(digits_pad, text='1', height=2,width=3, command=lambda: self.num_press('1'))
@@ -74,9 +74,11 @@ class App(tk.Tk):
         button_eq = tk.Button(digits_pad, text='=', height=2,width=3, command=self.eq)
         button_eq.grid(row=4, column=3, sticky='WE', columnspan=1)
         
-        self.operation = self.do_nothing
+        self.operation = ''
         self.new_op = False
         self.pressed_eq = False
+        self.ans = 0
+        self.arg2 = 0
 
     def clear(self):
         """ clear view """
@@ -86,11 +88,19 @@ class App(tk.Tk):
         """ Append given number to view """
         if self.pressed_eq:
             self.clear()
-            self.ans = self.arg2
             self.pressed_eq = False
         result_str = self.view.cget("text") + key
-        result_str = str(int(result_str))
+        try:
+            result = int(result_str)
+        except ValueError:
+            result = float(result_str)
+
+        result_str = str(result)
         self.view.config(text=result_str)
+        print()
+        print("ans:", self.ans)
+        print("op:", self.operation)
+        print("arg2:", self.arg2)
             
 
     def add(self):
@@ -99,13 +109,34 @@ class App(tk.Tk):
         self.clear()
         self.new_op = True
     
+    def sub(self):
+        self.operation = '-'
+        self.ans = self.view.cget("text")
+        self.clear()
+        self.new_op = True
     
+    def mul(self):
+        self.operation = '*'
+        self.ans = self.view.cget("text")
+        self.clear()
+        self.new_op = True
+
+    def perc(self):
+        perc = float(self.view.cget("text"))/100
+        self.view.config(text=str(perc))
+        self.pressed_eq = True
 
     def eq(self):
         if self.new_op:
             self.arg2 = self.view.cget("text")
         else:
             self.ans = self.view.cget("text")
+
+        print()
+        print("ans:", self.ans)
+        print("op:", self.operation)
+        print("arg2:", self.arg2)
+
         expression = str(self.ans) + str(self.operation) + str(self.arg2)
         result = eval(expression)
         print(expression, result)
@@ -115,11 +146,6 @@ class App(tk.Tk):
 
         self.pressed_eq = True
 
-    # def sub(self):
-    #     result = self.ans - self.arg2
-    #     result_str = str(result)
-    #     self.ans = result
-    #     self.view.config(text=result_str)
 
     def button_press(self,x):
         pass
