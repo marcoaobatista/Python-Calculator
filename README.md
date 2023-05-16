@@ -17,3 +17,5 @@ Percentage, convert to negative, and decimal point functionalities also are avai
 
 Have fun with this calculator :) lol
 
+## Screenshot
+<img width="364" alt="Screen Shot 2023-05-15 at 11 10 52 PM" src="https://github.com/marcoaobatista/Python-Calculator/assets/61336233/caaf415e-899f-48d8-b4a6-3e3aed030aa3">
